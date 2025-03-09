@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Персональная информация</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="/static/js/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>Персональная информация</h1>
+            <button id="logoutBtn">Выход</button>
+        </header>
+        
+        <div class="dashboard-content">
+            <section class="user-info">
+                <h2>Пользовательская информация</h2>
+                <div id="userDetails">
+                </div>
+            </section>
+
+            <section class="accounts">
+                <h2>Пользовательские счета</h2>
+                <div id="accountsList">
+                </div>
+            </section>
+
+            <section class="payments">
+                <h2>Пользовательские платежи</h2>
+                <div id="paymentsList">
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
+
