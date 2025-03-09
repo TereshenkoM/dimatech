@@ -15,3 +15,11 @@ class UserDAO:
         user = query.scalar_one_or_none()
 
         return user
+
+    async def get_user_by_id(self, id: str) -> Optional[UserORM]:
+        query = await self.session.execute(
+            select(UserORM).where(UserORM.id == id)
+        )
+        user = query.scalar_one_or_none()
+
+        return user

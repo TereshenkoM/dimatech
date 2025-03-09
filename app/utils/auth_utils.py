@@ -53,9 +53,4 @@ async def get_jwt_response(email, password):
         path="/",
     )
 
-    response.add_cookie(
-        key='user_id',
-        value=str(user.id)
-    )
-
     return response

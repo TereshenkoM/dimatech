@@ -2,6 +2,8 @@ from sanic import Sanic
 from sanic_ext import Extend
 from app.routes.pages import pages_bp
 from app.routes.auth import auth_bp
+from app.routes.api import api_bp
+from app.middlewares import setup_middlewares 
 
 app = Sanic("PaymentApp")
 
@@ -10,8 +12,9 @@ app.config.TEMPLATING_PATH_TO_TEMPLATES = "app/templates"
 
 Extend(app)
 
-app.blueprint([pages_bp, auth_bp])
+setup_middlewares(app)  # Регистрируем middleware
 
+app.blueprint([pages_bp, auth_bp, api_bp])
 app.static("/static", "app/static")
 
 if __name__ == "__main__":
