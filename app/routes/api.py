@@ -1,5 +1,5 @@
 from sanic import Blueprint
-from sanic.response import json
+from sanic.response import json as sanic_json
 from app.daos.payment_dao import PaymentDAO
 from app.database.config import get_async_session
 from hashlib import sha256
@@ -12,7 +12,7 @@ api_bp = Blueprint("api", url_prefix="/api")
 async def user_info(request):
     user = request.ctx.user
 
-    return json({
+    return sanic_json({
         "user_id": str(user.id),
         "user_fullname": user.get_fullname(),
         "email": user.email
@@ -39,7 +39,7 @@ async def account_info(request):
         else:
             accounts_payload = []
 
-        return json({"accounts": accounts_payload})
+        return sanic_json({"accounts": accounts_payload})
 
 
 @api_bp.get("/transaction")
@@ -51,7 +51,7 @@ async def get_transactions(request):
         accounts = await payment_dao.get_account_by_user_id(user.id)
 
         if not accounts:
-            return json([])
+            return sanic_json([])
 
         transactions = await payment_dao.get_transaction_by_accounts(accounts)
         transactions_payload = [
@@ -64,11 +64,11 @@ async def get_transactions(request):
             } 
             for transaction in transactions]
 
-        return json({"transactions": transactions_payload})
+        return sanic_json({"transactions": transactions_payload})
 
 
 @api_bp.post("/transaction")
-async def transaction(request):
+async def create_transaction(request):
     payload = request.json
     secret_key = settings.SECRET_KEY
 
@@ -78,7 +78,6 @@ async def transaction(request):
     amount = payload.get('amount')
     
     signature = sha256(f'{account_id}{amount}{transaction_id}{user_id}{secret_key}'.encode()).hexdigest()
-    print(signature)
 
     if signature != payload.get('signature'):
         raise SanicException("Invalid signature", status_code=400)
@@ -98,4 +97,19 @@ async def transaction(request):
             
             await payment_dao.create_transaction(account.id, transaction_id, amount)
 
-    return json({"status": "success"})
+    return sanic_json({"status": "success"})
+
+
+@api_bp.post("/signature")
+async def signature(request):
+    payload = request.json
+    secret_key = settings.SECRET_KEY
+
+    transaction_id = payload.get('transaction_id')
+    user_id = payload.get('user_id')
+    account_id = payload.get('account_id')
+    amount = payload.get('amount')
+    
+    signature = sha256(f'{account_id}{amount}{transaction_id}{user_id}{secret_key}'.encode()).hexdigest()
+
+    return sanic_json({'signature': signature})
