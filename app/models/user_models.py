@@ -46,5 +46,10 @@ class UserORM(Base):
         pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
         return pwd_context.verify(password, self.password)
 
+    def get_fullname(self):
+        if self.father_name:
+            return f'{self.last_name} {self.first_name} {self.father_name}'
+        return f'{self.last_name} {self.first_name}'
+
     def __str__(self):
         return f'{self.id} - {self.password}'
