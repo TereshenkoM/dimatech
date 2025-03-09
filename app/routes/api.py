@@ -1,6 +1,7 @@
 from sanic import Blueprint
 from sanic.response import json as sanic_json
 from app.daos.payment_dao import PaymentDAO
+from app.daos.user_dao import UserDAO
 from app.database.config import get_async_session
 from hashlib import sha256
 from app.core.config import settings
@@ -43,7 +44,7 @@ async def account_info(request):
 
 
 @api_bp.get("/transaction")
-async def get_transactions(request):
+async def get_transaction(request):
     user = request.ctx.user  
     
     async with get_async_session() as session:
@@ -113,3 +114,51 @@ async def signature(request):
     signature = sha256(f'{account_id}{amount}{transaction_id}{user_id}{secret_key}'.encode()).hexdigest()
 
     return sanic_json({'signature': signature})
+
+
+@api_bp.get('/admin/users')
+async def users(request):
+    user = request.ctx.user
+
+    if not user.is_super_user:
+        raise SanicException("User dont have an access", status_code=403)
+
+    async with get_async_session() as session:
+        user_dao = UserDAO(session)
+        users = await user_dao.get_users()
+
+        return sanic_json({
+            'users': [
+                {
+                    "id": str(user.id),
+                    "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "father_name": user.father_name,
+                } 
+                for user in users
+            ]
+        })
+
+
+@api_bp.post('/admin/user')
+async def create_user(request):
+    user = request.ctx.user
+
+    if not user.is_super_user:
+        raise SanicException("User dont have an access", status_code=403)
+
+    payload = request.json
+    print(payload)
+
+    async with get_async_session() as session:
+        user_dao = UserDAO(session)
+        email = payload.get('email')
+        first_name = payload.get('firstName')
+        last_name = payload.get('lastName')
+        father_name = payload.get('fatherName')
+        password = payload.get('password')
+        
+        await user_dao.create_user(email, password, first_name, last_name, father_name)
+
+    return sanic_json({"status": "success"})

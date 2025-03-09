@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Персональная информация</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="/static/js/admin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>Панель администратора</h1>
+            <div class="header-buttons">
+                <button onclick="window.location.href='/'" class="back-btn">Вернуться на главную</button>
+            </div>
+        </header>
+        
+        <div class="admin-content">
+            <section class="user-management">
+                <h2>Пользователи</h2>
+                <button id="addUserBtn" class="action-btn">Добавить нового пользователя</button>
+                <div id="usersList"></div>
+            </section>
+        </div>
+    </div>
+
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <h2>Новый пользователь</h2>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label for="newEmail">Почта*:</label>
+                    <input type="email" id="newEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="newFirstName">Имя*:</label>
+                    <input type="text" id="newFirstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="newLastName">Фамилия*:</label>
+                    <input type="text" id="newLastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="newFatherName">Отчество:</label>
+                    <input type="text" id="newFatherName" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">Пароль:</label>
+                    <input type="password" id="newPassword" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="save-btn">Сохранить</button>
+                    <button type="button" class="cancel-btn" onclick="closeModal('addUserModal')">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <h2>Изменить пользователя</h2>
+            <form id="editUserForm">
+                <input type="hidden" id="editUserId">
+                <div class="form-group">
+                    <label for="editEmail">Почта:</label>
+                    <input type="email" id="editEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="editFirstName">Имя*:</label>
+                    <input type="text" id="editFirstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editLastName">Фамилия*:</label>
+                    <input type="text" id="editLastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editFatherName">Отчество:</label>
+                    <input type="text" id="editFatherName" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="save-btn">Обновить</button>
+                    <button type="button" class="cancel-btn" onclick="closeModal('editUserModal')">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

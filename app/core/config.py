@@ -8,7 +8,7 @@ class Settings(BaseSettings):
 	DB_NAME: str
 	JWT_SECRET: str
 	JWT_ALGORITHM:str = "HS256"
-	JWT_EXP: int = 3600
+	JWT_EXP: int = 36000
 	SECRET_KEY: str
 
 	@property

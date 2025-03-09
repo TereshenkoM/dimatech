@@ -23,3 +23,25 @@ class UserDAO:
         user = query.scalar_one_or_none()
 
         return user
+    
+    async def get_users(self):
+        query = await self.session.execute(
+            select(UserORM)
+        )
+
+        users = query.scalars().all()
+
+        return users
+
+    async def create_user(self, email, password, first_name, last_name, father_name):
+        user = UserORM(
+            email = email,
+            first_name=first_name,
+            last_name=last_name,
+            father_name = father_name
+        )
+        user.set_password(password=password)
+        print(user.password)
+        self.session.add(user)
+
+        await self.session.commit()

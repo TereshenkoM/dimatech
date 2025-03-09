@@ -32,13 +32,9 @@ class UserORM(Base):
         mapped_column(server_default=text("TIMEZONE('utc', now()::timestamp)"))
     ]]
 
-    @validates('password')
-    def validate_password(self, password: str) -> str:
-        if len(password) < 8:
-            raise ValueError('Минимальная длина пароля должна составлять 8 символов')
-        return password
-
     def set_password(self, password: str) -> None:
+        if len(password) < 8:
+            raise ValueError('Пароль должен быть не менее 8 символов')
         pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
         self.password = pwd_context.hash(password)
 

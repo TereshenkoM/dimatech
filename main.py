@@ -12,7 +12,7 @@ app.config.TEMPLATING_PATH_TO_TEMPLATES = "app/templates"
 
 Extend(app)
 
-setup_middlewares(app)  # Регистрируем middleware
+setup_middlewares(app)
 
 app.blueprint([pages_bp, auth_bp, api_bp])
 app.static("/static", "app/static")
