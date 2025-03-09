@@ -56,7 +56,6 @@ button:hover {
     background: #0056b3;
 }
 
-/* Dashboard Styles */
 .dashboard-container {
     padding: 2rem;
     max-width: 1200px;
@@ -75,6 +74,11 @@ header {
 #logoutBtn {
     width: auto;
     padding: 0.5rem 1rem;
+}
+#signatureBtn {
+    width: auto;
+    padding: 0.5rem 1rem;
+    background: #28a745;    
 }
 
 section {
