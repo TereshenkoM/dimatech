@@ -1,6 +1,6 @@
 from sanic import Blueprint, text
 from sanic.exceptions import SanicException
-from app.schemas.user_shema import LoginRequest
+from app.schemas.user_shemas import LoginRequest
 from pydantic import ValidationError
 from app.utils.auth_utils import get_jwt_response
 

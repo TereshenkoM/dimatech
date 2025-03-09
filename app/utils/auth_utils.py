@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from jose import jwt
-from app.schemas.user_shema import LoginResponse, TokenPayload
+from app.schemas.user_shemas import LoginResponse, TokenPayload
 from app.core.config import settings
 from sanic.response import json as sanic_json
 from app.database.config import get_async_session
