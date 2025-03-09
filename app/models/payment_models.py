@@ -48,7 +48,7 @@ class TransactionORM(Base):
             server_default=text("gen_random_uuid()")
         )
     ]]    
-    account_id: Mapped[Annotated[int, mapped_column(
+    account_id: Mapped[Annotated[uuid.UUID, mapped_column(
         SA_UUID(as_uuid=True),
         ForeignKey('account.id', ondelete='CASCADE'),
         nullable=False)]
