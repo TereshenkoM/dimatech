@@ -24,16 +24,18 @@ class AccountORM(Base):
         ForeignKey('user.id', ondelete='CASCADE'),
         nullable=False)]
     ]
+    account_id: Mapped[Annotated[str, mapped_column(nullable=False)]]
     created_at: Mapped[Annotated[
         datetime, 
         mapped_column(server_default=text("TIMEZONE('utc', now()::timestamp)"))
     ]]
 
     @validates('balance')
-    def validate_balance(self, balance: int) -> int:
-        if len(balance) < 0:
+    def validate_balance(self, _, balance: int) -> int:
+        if balance < 0:
             raise ValueError('Баланс не может быть отрицательным')
         return balance
+
 
 
 class TransactionORM(Base):
@@ -47,7 +49,8 @@ class TransactionORM(Base):
             index=True,
             server_default=text("gen_random_uuid()")
         )
-    ]]    
+    ]]
+    transaction_id: Mapped[Annotated[str, mapped_column(nullable=False)]]
     account_id: Mapped[Annotated[uuid.UUID, mapped_column(
         SA_UUID(as_uuid=True),
         ForeignKey('account.id', ondelete='CASCADE'),
@@ -61,7 +64,7 @@ class TransactionORM(Base):
     ]]
 
     @validates('amount')
-    def validate_balance(self, amount: int) -> int:
+    def validate_amount(self, amount: int) -> int:
         if len(amount) <= 0:
             raise ValueError('Сумма пополнения должна быть больше нуля')
         return amount

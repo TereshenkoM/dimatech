@@ -1,14 +1,12 @@
-"""Добавил тестового пользователя и администратора
+"""Добавил тестового пользователя
 
-Revision ID: 15492e0f4507
-Revises: 48aec095eec1
-Create Date: 2025-03-09 12:41:01.090396
+Revision ID: acd019ebc75b
+Revises: 3dc8c6463af6
+Create Date: 2025-03-09 17:58:57.325983
 
 """
 from typing import Sequence, Union
 
-from alembic import op
-import sqlalchemy as sa
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
@@ -17,8 +15,8 @@ import uuid
 import bcrypt
 
 # revision identifiers, used by Alembic.
-revision: str = '15492e0f4507'
-down_revision: Union[str, None] = '48aec095eec1'
+revision: str = 'acd019ebc75b'
+down_revision: Union[str, None] = '3dc8c6463af6'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
