@@ -7,6 +7,9 @@ class Settings(BaseSettings):
 	DB_PASS: str
 	DB_NAME: str
 	JWT_SECRET: str
+	JWT_ALGORITHM:str = "HS256"
+	JWT_EXP: int = 3600
+	SECRET_KEY: str
 
 	@property
 	def ASYNC_DATABASE_URL(self):
@@ -14,10 +17,11 @@ class Settings(BaseSettings):
 
 	@property
 	def JWT_CONFIG(self):
-		JWT_ALGORITHM = "HS256"
-		JWT_EXP = 3600
+		return self.JWT_SECRET, self.JWT_ALGORITHM, self.JWT_EXP
 
-		return self.JWT_SECRET, JWT_ALGORITHM, JWT_EXP
+	@property
+	def SECRET_KEY(self):
+		return self.SECRET_KEY
 
 	model_config = SettingsConfigDict(env_file=".env")
 

@@ -37,7 +37,6 @@ class AccountORM(Base):
         return balance
 
 
-
 class TransactionORM(Base):
     __tablename__ = 'transaction'
 
@@ -57,14 +56,13 @@ class TransactionORM(Base):
         nullable=False)]
     ]
     amount: Mapped[Annotated[int, mapped_column(nullable=False)]]
-    signature: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[Annotated[
         datetime, 
         mapped_column(server_default=text("TIMEZONE('utc', now()::timestamp)"))
     ]]
 
     @validates('amount')
-    def validate_amount(self, amount: int) -> int:
-        if len(amount) <= 0:
+    def validate_amount(self, _, amount: int) -> int:
+        if amount <= 0:
             raise ValueError('Сумма пополнения должна быть больше нуля')
         return amount
