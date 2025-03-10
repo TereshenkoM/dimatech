@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     axios.get('/api/user_info')
         .then(response => {
-            let userData = response.data;
+            let userData = JSON.parse(response.data);
             let userId = userData.user_id;
             let userFullName = userData.user_fullname;
             let userEmail = userData.email;
@@ -28,16 +28,17 @@ document.addEventListener("DOMContentLoaded", () => {
     
     axios.get('/api/transaction')
         .then(response => {
-            const transactions = response.data.transactions;
-        
-            const transactionsHtml = transactions.map(transaction => `
-                <div class="payment-item">
-                    <p><strong>Дата:</strong> ${transaction.created_at}</p>
-                    <p><strong>Сумма:</strong> ${transaction.amount}</p>
-                </div>
-                <hr>
-            `).join('');
-            document.getElementById('paymentsList').innerHTML = transactionsHtml;
+            if (response.data) {
+                const transactions = JSON.parse(response.data).transactions;
+                const transactionsHtml = transactions.map(transaction => `
+                    <div class="payment-item">
+                        <p><strong>Дата:</strong> ${transaction.created_at}</p>
+                        <p><strong>Сумма:</strong> ${transaction.amount}</p>
+                    </div>
+                    <hr>
+                `).join('');
+                document.getElementById('paymentsList').innerHTML = transactionsHtml;
+            }
         })
         .catch(error => {
             console.error('Error fetching transaction info:', error);
@@ -46,18 +47,19 @@ document.addEventListener("DOMContentLoaded", () => {
     
     axios.get('/api/account_info')
         .then(response => {
-            const accounts = response.data.accounts;
-            
-            const accountsHtml = accounts.map(account => `
-                <div class="account-item">
-                    <p><strong>ID:</strong> ${account.id}</p>
-                    <p><strong>Баланс:</strong> ${account.balance}</p>
-                    <p><strong>Создан:</strong> ${account.created_at}</p>
-                </div>
-                <hr>
-            `).join('');
-            
-            document.getElementById('accountsList').innerHTML = accountsHtml;
+            if (response.data) {
+                const accounts = JSON.parse(response.data).accounts;
+                const accountsHtml = accounts.map(account => `
+                    <div class="account-item">
+                        <p><strong>ID:</strong> ${account.id}</p>
+                        <p><strong>Баланс:</strong> ${account.balance}</p>
+                        <p><strong>Создан:</strong> ${account.created_at}</p>
+                    </div>
+                    <hr>
+                `).join('');
+                
+                document.getElementById('accountsList').innerHTML = accountsHtml;
+            }
         })
         .catch(error => {
             console.error('Error fetching account info:', error);

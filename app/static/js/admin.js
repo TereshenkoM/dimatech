@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     window.deleteUser = function(userId) {
         axios.delete('/api/admin/user', {
-            data: { userId: userId }
+            data: { user_id: userId }
         })
         .then(response => {
             displayUsers();
@@ -31,25 +31,27 @@ document.addEventListener("DOMContentLoaded", () => {
     function displayUsers() {
         axios.get('/api/admin/users')
         .then(response => {
-            const users = response.data.users;
-            const usersHtml = users.map(user => `
-                <div class="user-item">
-                    <div class="user-info">
-                        <h3>${user.last_name} ${user.first_name} ${user.father_name}</h3>
-                        <p><strong>ID:</strong> ${user.id}</p>
-                        <p><strong>Почта:</strong> ${user.email}</p>
-                        <p><strong>Счета:</strong> ${user.accounts && user.accounts.length 
-                            ? user.accounts.map(a => `ID: ${a.account_id}, Баланс: ${a.balance}`).join(' | ')
-                            : 'Нет счетов'}</p>
+            if (response.data) {
+                const users = JSON.parse(response.data).users
+                const usersHtml = users.map(user => `
+                    <div class="user-item">
+                        <div class="user-info">
+                            <h3>${user.last_name} ${user.first_name} ${user.father_name}</h3>
+                            <p><strong>ID:</strong> ${user.id}</p>
+                            <p><strong>Почта:</strong> ${user.email}</p>
+                            <p><strong>Счета:</strong> ${user.accounts && user.accounts.length 
+                                ? user.accounts.map(a => `ID: ${a.account_id}, Баланс: ${a.balance}`).join(' | ')
+                                : 'Нет счетов'}</p>
+                        </div>
+                        <div class="user-actions">
+                            <button onclick="editUser('${user.id}', '${user.email}', '${user.first_name}', '${user.last_name}', '${user.father_name}')" class="edit-btn">Изменить</button>
+                            <button onclick="deleteUser('${user.id}')" class="delete-btn">Удалить</button>
+                        </div>
                     </div>
-                    <div class="user-actions">
-                        <button onclick="editUser('${user.id}', '${user.email}', '${user.first_name}', '${user.last_name}', '${user.father_name}')" class="edit-btn">Изменить</button>
-                        <button onclick="deleteUser('${user.id}')" class="delete-btn">Удалить</button>
-                    </div>
-                </div>
-            `).join('');
-            
-            document.getElementById('usersList').innerHTML = usersHtml;
+                `).join('');
+                
+                document.getElementById('usersList').innerHTML = usersHtml;
+            }
         })
         .catch(console.error);
     }
@@ -63,9 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         axios.post('/api/admin/user', {
             email: document.getElementById('newEmail').value,
-            firstName: document.getElementById('newFirstName').value,
-            lastName: document.getElementById('newLastName').value,
-            fatherName: document.getElementById('newFatherName').value,
+            first_name: document.getElementById('newFirstName').value,
+            last_name: document.getElementById('newLastName').value,
+            father_name: document.getElementById('newFatherName').value,
             password: document.getElementById('newPassword').value,
          })
         .then(response => {
@@ -81,9 +83,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('editUserForm').addEventListener('submit', (e) => {
         axios.patch('/api/admin/user', {
             email: document.getElementById('editEmail').value,
-            firstName: document.getElementById('editFirstName').value,
-            lastName: document.getElementById('editLastName').value,
-            fatherName: document.getElementById('editFatherName').value,
+            first_name: document.getElementById('editFirstName').value,
+            last_name: document.getElementById('editLastName').value,
+            father_name: document.getElementById('editFatherName').value,
             password: document.getElementById('editPassword').value,
          })
         .then(response => {
