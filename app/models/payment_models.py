@@ -44,7 +44,7 @@ class TransactionORM(Base):
     __tablename__ = "transaction"
 
     id: Mapped[Annotated[
-        uuid.UUID, 
+        uuid.UUID,
         mapped_column(
             SA_UUID(as_uuid=True),
             primary_key=True,
@@ -60,7 +60,7 @@ class TransactionORM(Base):
     ]
     amount: Mapped[Annotated[int, mapped_column(nullable=False)]]
     created_at: Mapped[Annotated[
-        datetime, 
+        datetime,
         mapped_column(server_default=text("TIMEZONE('utc', now()::timestamp)"))
     ]]
 

@@ -12,19 +12,24 @@ from app.schemas.auth_shemas import LoginResponse, TokenPayload
 
 async def validate_user_payload(email, password):
     if not email or not password:
-        raise SanicException("Email or password is missing", status_code=400)
+        raise SanicException(
+            "Email or password is missing", status_code=400
+        )
 
     async with get_async_session() as session:
         user_dao = UserDAO(session)
         user = await user_dao.get_user_by_email(email)
 
         if not user or not user.check_password(password):
-            raise SanicException("Incorrect email or password", status_code=401)
-        
+            raise SanicException(
+                "Incorrect email or password", status_code=401
+            )
+
         if not user.is_active:
             raise SanicException("User is not active", status_code=403)
 
         return user
+
 
 async def get_jwt_response(email, password):
     JWT_SECRET, JWT_ALGORITHM, JWT_EXP = settings.JWT_CONFIG

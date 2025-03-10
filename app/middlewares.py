@@ -13,7 +13,9 @@ def setup_middlewares(app: Sanic):
         if token:
             JWT_SECRET, JWT_ALGORITHM, _ = settings.JWT_CONFIG
             try:
-                payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+                payload = jwt.decode(
+                    token, JWT_SECRET, algorithms=[JWT_ALGORITHM]
+                )
                 user_id = payload.get("sub")
                 if user_id:
                     async with get_async_session() as session:

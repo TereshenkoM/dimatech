@@ -1,10 +1,10 @@
-from hashlib import sha256
+import asyncio
 
 from pydantic import ValidationError
 from sanic import Blueprint, response
 from sanic.exceptions import SanicException
 
-from app.core.config import settings
+from app.utils.api_utils import get_signature
 from app.daos.payment_dao import PaymentDAO
 from app.daos.user_dao import UserDAO
 from app.database.config import get_async_session
@@ -21,6 +21,7 @@ from app.schemas.api_shemas import (
 
 api_bp = Blueprint("api", url_prefix="/api")
 
+
 @api_bp.get("/user_info")
 async def user_info(request):
     user = request.ctx.user
@@ -32,6 +33,7 @@ async def user_info(request):
         ).model_dump_json()
     )
 
+
 @api_bp.get("/account_info")
 async def account_info(request):
     user = request.ctx.user
@@ -39,7 +41,7 @@ async def account_info(request):
     async with get_async_session() as session:
         payment_dao = PaymentDAO(session)
         accounts = await payment_dao.get_account_by_user_id(user.id)
-        
+
         return response.json(
             AccountInfoResponse(
                 accounts=[
@@ -52,6 +54,7 @@ async def account_info(request):
             ).model_dump_json()
         )
 
+
 @api_bp.get("/transaction")
 async def get_transaction(request):
     user = request.ctx.user
@@ -60,7 +63,7 @@ async def get_transaction(request):
         payment_dao = PaymentDAO(session)
         accounts = await payment_dao.get_account_by_user_id(user.id)
         transactions = await payment_dao.get_transaction_by_accounts(accounts)
-        
+
         return response.json(
             TransactionListResponse(
                 transactions=[
@@ -75,6 +78,7 @@ async def get_transaction(request):
             ).model_dump_json()
         )
 
+
 @api_bp.post("/transaction")
 async def create_transaction(request):
     try:
@@ -82,10 +86,8 @@ async def create_transaction(request):
     except ValidationError as e:
         raise SanicException(e.json(), status_code=400)
 
-    secret_key = settings.SECRET_KEY
-    signature = sha256(
-        f"{payload.account_id}{payload.amount}{payload.transaction_id}{payload.user_id}{secret_key}".encode()
-    ).hexdigest()
+    signature_task = asyncio.create_task(get_signature(payload))
+    signature = await signature_task
 
     if signature != payload.signature:
         raise SanicException("Invalid signature", status_code=400)
@@ -93,18 +95,29 @@ async def create_transaction(request):
     async with get_async_session() as session:
         async with session.begin():
             payment_dao = PaymentDAO(session)
-            account = await payment_dao.check_user_account(str(payload.user_id), str(payload.account_id))
-            
+            account = await payment_dao.check_user_account(
+                str(payload.user_id), str(payload.account_id)
+            )
+
             if not account:
-                account = await payment_dao.create_user_account(str(payload.user_id), str(payload.account_id))
-            
-            existing_transaction = await payment_dao.check_transaction(payload.transaction_id, account.id)
+                account = await payment_dao.create_user_account(
+                    str(payload.user_id), str(payload.account_id)
+                )
+
+            existing_transaction = await payment_dao.check_transaction(
+                payload.transaction_id, account.id
+            )
             if existing_transaction:
-                raise SanicException("Transaction already exists", status_code=400)
-            
-            await payment_dao.create_transaction(account.id, payload.transaction_id, payload.amount)
+                raise SanicException(
+                    "Transaction already exists", status_code=400
+                )
+
+            await payment_dao.create_transaction(
+                account.id, payload.transaction_id, payload.amount
+            )
 
     return response.json({"status": "success"})
+
 
 @api_bp.post("/signature")
 async def signature(request):
@@ -113,12 +126,11 @@ async def signature(request):
     except ValidationError as e:
         raise SanicException(e.json(), status_code=400)
 
-    secret_key = settings.SECRET_KEY
-    signature = sha256(
-        f"{payload.account_id}{payload.amount}{payload.transaction_id}{payload.user_id}{secret_key}".encode()
-    ).hexdigest()
+    signature_task = asyncio.create_task(get_signature(payload))
+    signature = await signature_task
 
     return response.json({"signature": signature})
+
 
 @api_bp.get("/admin/users")
 async def users(request):
@@ -131,7 +143,7 @@ async def users(request):
         user_dao = UserDAO(session)
         users_list = await user_dao.get_users()
         payment_dao = PaymentDAO(session)
-        
+
         users_payload = []
         for user in users_list:
             accounts = await payment_dao.get_account_by_user_id(user.id)
@@ -151,7 +163,10 @@ async def users(request):
                 )
             )
 
-        return response.json(AdminUserListResponse(users=users_payload).model_dump_json())
+        return response.json(
+            AdminUserListResponse(users=users_payload).model_dump_json()
+        )
+
 
 @api_bp.post("/admin/user")
 async def create_user(request):
@@ -176,6 +191,7 @@ async def create_user(request):
 
     return response.json({"status": "success"}, status=200)
 
+
 @api_bp.patch("/admin/user")
 async def update_user(request):
     user = request.ctx.user
@@ -198,6 +214,7 @@ async def update_user(request):
         )
 
     return response.json({"status": "success"}, status=200)
+
 
 @api_bp.delete("/admin/user")
 async def delete_user(request):

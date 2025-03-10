@@ -9,7 +9,7 @@ from app.models.user_models import UserORM
 class UserDAO:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
-    
+
     async def get_user_by_email(self, email: str) -> Optional[UserORM]:
         query = await self.session.execute(
             select(UserORM).where(UserORM.email == email)
@@ -25,7 +25,7 @@ class UserDAO:
         user = query.scalar_one_or_none()
 
         return user
-    
+
     async def get_users(self):
         query = await self.session.execute(
             select(UserORM)
@@ -35,20 +35,28 @@ class UserDAO:
 
         return users
 
-    async def create_user(self, email, password, first_name, last_name, father_name):
+    async def create_user(
+        self, email, password,
+        first_name, last_name, father_name
+    ):
         user = UserORM(
-            email = email,
+            emai=email,
             first_name=first_name,
             last_name=last_name,
-            father_name = father_name
+            father_name=father_name
         )
         user.set_password(password=password)
         self.session.add(user)
 
         await self.session.commit()
 
-    async def update_user(self, email, password, first_name, last_name, father_name):
-        query = await self.session.execute(select(UserORM).filter(UserORM.email == email))
+    async def update_user(
+        self, email, password,
+        first_name, last_name, father_name
+    ):
+        query = await self.session.execute(select(UserORM).filter(
+            UserORM.email == email
+        ))
         user = query.scalar_one_or_none()
         if user:
             user.email = email
@@ -67,10 +75,9 @@ class UserDAO:
             select(UserORM).filter(UserORM.id == user_id)
         )
         user = result.scalar_one_or_none()
-        
+
         if user is None:
             raise Exception("User not found")
-        
+
         await self.session.delete(user)
         await self.session.commit()
-

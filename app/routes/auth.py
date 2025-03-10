@@ -7,6 +7,7 @@ from app.utils.auth_utils import get_jwt_response
 
 auth_bp = Blueprint("auth", url_prefix="/auth")
 
+
 @auth_bp.post("/login")
 async def login(request):
     payload = request.json

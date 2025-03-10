@@ -7,11 +7,11 @@ pages_bp = Blueprint("pages", url_prefix="")
 
 @pages_bp.get("/")
 async def index_page(request):
-    user = request.ctx.user 
-    
+    user = request.ctx.user
+
     if not user:
         return redirect("/login")
-    
+
     return await render("index.html")
 
 
@@ -23,10 +23,10 @@ async def login_page(request):
 @pages_bp.get("/signature")
 async def signature_page(request):
     user = request.ctx.user
-    
+
     if not user:
         return redirect("/login")
-    
+
     return await render("signature.html")
 
 
@@ -40,5 +40,3 @@ async def admin_page(request):
         return redirect("/")
 
     return await render("admin.html")
-
-

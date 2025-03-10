@@ -14,7 +14,7 @@ class UserORM(Base):
     __tablename__ = "user"
 
     id: Mapped[Annotated[
-        uuid.UUID, 
+        uuid.UUID,
         mapped_column(
             SA_UUID(as_uuid=True),
             primary_key=True,
@@ -22,7 +22,9 @@ class UserORM(Base):
             server_default=text("gen_random_uuid()")
         )
     ]]
-    email: Mapped[Annotated[str, mapped_column(unique=True, index=True, nullable=False)]]
+    email: Mapped[Annotated[str, mapped_column(
+        unique=True, index=True, nullable=False
+    )]]
     first_name: Mapped[Annotated[str, mapped_column(nullable=False)]]
     last_name: Mapped[Annotated[str, mapped_column(nullable=False)]]
     father_name: Mapped[str]
@@ -31,7 +33,7 @@ class UserORM(Base):
     is_staff: Mapped[Annotated[bool, mapped_column(default=False)]]
     is_super_user: Mapped[Annotated[bool, mapped_column(default=False)]]
     created_at: Mapped[Annotated[
-        datetime, 
+        datetime,
         mapped_column(server_default=text("TIMEZONE('utc', now()::timestamp)"))
     ]]
 
