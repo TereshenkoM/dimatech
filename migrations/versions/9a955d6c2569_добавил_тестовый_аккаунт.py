@@ -5,15 +5,13 @@ Revises: acd019ebc75b
 Create Date: 2025-03-09 18:00:58.453210
 
 """
+import uuid
+from datetime import datetime
 from typing import Sequence, Union
 
-from alembic import op
 import sqlalchemy as sa
-
-from datetime import datetime
-
+from alembic import op
 from sqlalchemy.dialects.postgresql import UUID
-import uuid
 
 # revision identifiers, used by Alembic.
 revision: str = '9a955d6c2569'

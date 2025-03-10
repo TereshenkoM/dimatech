@@ -1,10 +1,13 @@
-from app.database.config import Base
-from sqlalchemy.orm import Mapped, mapped_column, validates
-from sqlalchemy import text, UUID as SA_UUID
-from typing import Annotated
-from passlib.context import CryptContext
-from datetime import datetime
 import uuid
+from datetime import datetime
+from typing import Annotated
+
+from passlib.context import CryptContext
+from sqlalchemy import UUID as SA_UUID
+from sqlalchemy import text
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.database.config import Base
 
 
 class UserORM(Base):

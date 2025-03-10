@@ -1,8 +1,10 @@
-from sanic import Sanic
 from jose import jwt
+from sanic import Sanic
+
 from app.core.config import settings
-from app.database.config import get_async_session
 from app.daos.user_dao import UserDAO
+from app.database.config import get_async_session
+
 
 def setup_middlewares(app: Sanic):
     @app.middleware("request")

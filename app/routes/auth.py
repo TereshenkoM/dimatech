@@ -1,7 +1,8 @@
+from pydantic import ValidationError
 from sanic import Blueprint, text
 from sanic.exceptions import SanicException
+
 from app.schemas.auth_shemas import LoginRequest
-from pydantic import ValidationError
 from app.utils.auth_utils import get_jwt_response
 
 auth_bp = Blueprint("auth", url_prefix="/auth")

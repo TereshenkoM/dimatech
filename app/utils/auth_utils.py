@@ -1,11 +1,13 @@
 from datetime import datetime, timedelta
+
 from jose import jwt
-from app.schemas.auth_shemas import LoginResponse, TokenPayload
-from app.core.config import settings
-from sanic.response import json as sanic_json
-from app.database.config import get_async_session
-from app.daos.user_dao import UserDAO
 from sanic.exceptions import SanicException
+from sanic.response import json as sanic_json
+
+from app.core.config import settings
+from app.daos.user_dao import UserDAO
+from app.database.config import get_async_session
+from app.schemas.auth_shemas import LoginResponse, TokenPayload
 
 
 async def validate_user_payload(email, password):

@@ -1,9 +1,12 @@
-from app.database.config import Base
-from sqlalchemy.orm import Mapped, mapped_column, validates
-from sqlalchemy import text, ForeignKey, UUID as SA_UUID
-from typing import Annotated
-from datetime import datetime
 import uuid
+from datetime import datetime
+from typing import Annotated
+
+from sqlalchemy import UUID as SA_UUID
+from sqlalchemy import ForeignKey, text
+from sqlalchemy.orm import Mapped, mapped_column, validates
+
+from app.database.config import Base
 
 
 class AccountORM(Base):

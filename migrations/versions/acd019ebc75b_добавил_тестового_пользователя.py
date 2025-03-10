@@ -5,14 +5,14 @@ Revises: 3dc8c6463af6
 Create Date: 2025-03-09 17:58:57.325983
 
 """
+import uuid
+from datetime import datetime
 from typing import Sequence, Union
 
-from alembic import op
-import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import UUID
-from datetime import datetime
-import uuid
 import bcrypt
+import sqlalchemy as sa
+from alembic import op
+from sqlalchemy.dialects.postgresql import UUID
 
 # revision identifiers, used by Alembic.
 revision: str = 'acd019ebc75b'

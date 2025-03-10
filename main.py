@@ -1,9 +1,10 @@
 from sanic import Sanic
 from sanic_ext import Extend
-from app.routes.pages import pages_bp
-from app.routes.auth import auth_bp
+
+from app.middlewares import setup_middlewares
 from app.routes.api import api_bp
-from app.middlewares import setup_middlewares 
+from app.routes.auth import auth_bp
+from app.routes.pages import pages_bp
 
 app = Sanic("PaymentApp")
 
