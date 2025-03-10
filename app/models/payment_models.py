@@ -13,14 +13,14 @@ class AccountORM(Base):
     __tablename__ = "account"
 
     id: Mapped[Annotated[
-        uuid.UUID, 
+        uuid.UUID,
         mapped_column(
             SA_UUID(as_uuid=True),
             primary_key=True,
             index=True,
             server_default=text("gen_random_uuid()")
         )
-    ]]    
+    ]]
     balance: Mapped[Annotated[int, mapped_column(nullable=False, default=0)]]
     user_id: Mapped[Annotated[uuid.UUID, mapped_column(
         SA_UUID(as_uuid=True),
@@ -29,7 +29,7 @@ class AccountORM(Base):
     ]
     account_id: Mapped[Annotated[str, mapped_column(nullable=False)]]
     created_at: Mapped[Annotated[
-        datetime, 
+        datetime,
         mapped_column(server_default=text("TIMEZONE('utc', now()::timestamp)"))
     ]]
 
