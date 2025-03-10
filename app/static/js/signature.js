@@ -17,9 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
             .then(response => {
                 const signature = response.data.signature;
-                console.log(signature)
                 try {
-                    console.log(signature)
                     resultDiv.textContent = `Сгенерированная подпись: ${signature}`;
                     resultDiv.className = 'result success';
                 

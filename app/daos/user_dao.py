@@ -43,7 +43,6 @@ class UserDAO:
             father_name = father_name
         )
         user.set_password(password=password)
-        print(user.password)
         self.session.add(user)
 
         await self.session.commit()

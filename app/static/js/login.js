@@ -1,5 +1,4 @@
-document.addEventListener("DOMContentLoaded", (event) => {
-    console.log(document.getElementById('loginForm'))
+document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         

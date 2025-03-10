@@ -204,7 +204,6 @@ async def delete_user(request):
     user = request.ctx.user
     if not user.is_super_user:
         raise SanicException("User don't have access", status_code=403)
-    print(request.json)
     try:
         payload = AdminDeleteUserRequest(**request.json)
     except ValidationError as e:
