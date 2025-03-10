@@ -10,7 +10,7 @@ from app.database.config import Base
 
 
 class AccountORM(Base):
-    __tablename__ = 'account'
+    __tablename__ = "account"
 
     id: Mapped[Annotated[
         uuid.UUID, 
@@ -24,7 +24,7 @@ class AccountORM(Base):
     balance: Mapped[Annotated[int, mapped_column(nullable=False, default=0)]]
     user_id: Mapped[Annotated[uuid.UUID, mapped_column(
         SA_UUID(as_uuid=True),
-        ForeignKey('user.id', ondelete='CASCADE'),
+        ForeignKey("user.id", ondelete="CASCADE"),
         nullable=False)]
     ]
     account_id: Mapped[Annotated[str, mapped_column(nullable=False)]]
@@ -33,15 +33,15 @@ class AccountORM(Base):
         mapped_column(server_default=text("TIMEZONE('utc', now()::timestamp)"))
     ]]
 
-    @validates('balance')
+    @validates("balance")
     def validate_balance(self, _, balance: int) -> int:
         if balance < 0:
-            raise ValueError('Баланс не может быть отрицательным')
+            raise ValueError("Баланс не может быть отрицательным")
         return balance
 
 
 class TransactionORM(Base):
-    __tablename__ = 'transaction'
+    __tablename__ = "transaction"
 
     id: Mapped[Annotated[
         uuid.UUID, 
@@ -55,7 +55,7 @@ class TransactionORM(Base):
     transaction_id: Mapped[Annotated[str, mapped_column(nullable=False)]]
     account_id: Mapped[Annotated[uuid.UUID, mapped_column(
         SA_UUID(as_uuid=True),
-        ForeignKey('account.id', ondelete='CASCADE'),
+        ForeignKey("account.id", ondelete="CASCADE"),
         nullable=False)]
     ]
     amount: Mapped[Annotated[int, mapped_column(nullable=False)]]
@@ -64,8 +64,8 @@ class TransactionORM(Base):
         mapped_column(server_default=text("TIMEZONE('utc', now()::timestamp)"))
     ]]
 
-    @validates('amount')
+    @validates("amount")
     def validate_amount(self, _, amount: int) -> int:
         if amount <= 0:
-            raise ValueError('Сумма пополнения должна быть больше нуля')
+            raise ValueError("Сумма пополнения должна быть больше нуля")
         return amount

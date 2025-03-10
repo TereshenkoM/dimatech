@@ -60,7 +60,7 @@ class UserDAO:
 
             return user
         else:
-            raise Exception('User not found')
+            raise Exception("User not found")
 
     async def delete_user(self, user_id):
         result = await self.session.execute(
@@ -69,7 +69,7 @@ class UserDAO:
         user = result.scalar_one_or_none()
         
         if user is None:
-            raise Exception('User not found')
+            raise Exception("User not found")
         
         await self.session.delete(user)
         await self.session.commit()

@@ -84,7 +84,7 @@ async def create_transaction(request):
 
     secret_key = settings.SECRET_KEY
     signature = sha256(
-        f'{payload.account_id}{payload.amount}{payload.transaction_id}{payload.user_id}{secret_key}'.encode()
+        f"{payload.account_id}{payload.amount}{payload.transaction_id}{payload.user_id}{secret_key}".encode()
     ).hexdigest()
 
     if signature != payload.signature:
@@ -115,17 +115,17 @@ async def signature(request):
 
     secret_key = settings.SECRET_KEY
     signature = sha256(
-        f'{payload.account_id}{payload.amount}{payload.transaction_id}{payload.user_id}{secret_key}'.encode()
+        f"{payload.account_id}{payload.amount}{payload.transaction_id}{payload.user_id}{secret_key}".encode()
     ).hexdigest()
 
-    return response.json({'signature': signature})
+    return response.json({"signature": signature})
 
-@api_bp.get('/admin/users')
+@api_bp.get("/admin/users")
 async def users(request):
     user = request.ctx.user
 
     if not user.is_super_user:
-        raise SanicException("User don't have access", status_code=403)
+        raise SanicException("User dont have access", status_code=403)
 
     async with get_async_session() as session:
         user_dao = UserDAO(session)
@@ -153,11 +153,11 @@ async def users(request):
 
         return response.json(AdminUserListResponse(users=users_payload).model_dump_json())
 
-@api_bp.post('/admin/user')
+@api_bp.post("/admin/user")
 async def create_user(request):
     user = request.ctx.user
     if not user.is_super_user:
-        raise SanicException("User don't have access", status_code=403)
+        raise SanicException("User dont have access", status_code=403)
 
     try:
         payload = AdminCreateUserRequest(**request.json)
@@ -176,11 +176,11 @@ async def create_user(request):
 
     return response.json({"status": "success"}, status=200)
 
-@api_bp.patch('/admin/user')
+@api_bp.patch("/admin/user")
 async def update_user(request):
     user = request.ctx.user
     if not user.is_super_user:
-        raise SanicException("User don't have access", status_code=403)
+        raise SanicException("User dont have access", status_code=403)
 
     try:
         payload = AdminUpdateUserRequest(**request.json)
@@ -199,11 +199,11 @@ async def update_user(request):
 
     return response.json({"status": "success"}, status=200)
 
-@api_bp.delete('/admin/user')
+@api_bp.delete("/admin/user")
 async def delete_user(request):
     user = request.ctx.user
     if not user.is_super_user:
-        raise SanicException("User don't have access", status_code=403)
+        raise SanicException("User dont have access", status_code=403)
     try:
         payload = AdminDeleteUserRequest(**request.json)
     except ValidationError as e:

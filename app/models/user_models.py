@@ -37,7 +37,7 @@ class UserORM(Base):
 
     def set_password(self, password: str) -> None:
         if len(password) < 8:
-            raise ValueError('Пароль должен быть не менее 8 символов')
+            raise ValueError("Пароль должен быть не менее 8 символов")
         pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
         self.password = pwd_context.hash(password)
 
@@ -47,8 +47,8 @@ class UserORM(Base):
 
     def get_fullname(self):
         if self.father_name:
-            return f'{self.last_name} {self.first_name} {self.father_name}'
-        return f'{self.last_name} {self.first_name}'
+            return f"{self.last_name} {self.first_name} {self.father_name}"
+        return f"{self.last_name} {self.first_name}"
 
     def __str__(self):
-        return f'{self.id} - {self.password}'
+        return f"{self.id} - {self.password}"

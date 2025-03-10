@@ -20,7 +20,7 @@ async def login_page(request):
     return await render("login.html")
 
 
-@pages_bp.get('/signature')
+@pages_bp.get("/signature")
 async def signature_page(request):
     user = request.ctx.user
     
@@ -30,7 +30,7 @@ async def signature_page(request):
     return await render("signature.html")
 
 
-@pages_bp.get('/admin')
+@pages_bp.get("/admin")
 async def admin_page(request):
     user = request.ctx.user
 
