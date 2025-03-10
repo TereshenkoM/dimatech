@@ -8,6 +8,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         openModal('editUserModal');
     }
+    window.deleteUser = function(userId) {
+        axios.delete('/api/admin/user', {
+            data: { userId: userId }
+        })
+        .then(response => {
+            displayUsers();
+        })
+        .catch(error => {
+            console.error('Error delete user:', error);
+        });
+    }    
 
     window.openModal = function(modalId) {
         document.getElementById(modalId).style.display = 'block';
@@ -27,6 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         <h3>${user.last_name} ${user.first_name} ${user.father_name}</h3>
                         <p><strong>ID:</strong> ${user.id}</p>
                         <p><strong>Почта:</strong> ${user.email}</p>
+                        <p><strong>Счета:</strong> ${user.accounts && user.accounts.length 
+                            ? user.accounts.map(a => `ID: ${a.account_id}, Баланс: ${a.balance}`).join(' | ')
+                            : 'Нет счетов'}</p>
                     </div>
                     <div class="user-actions">
                         <button onclick="editUser('${user.id}', '${user.email}', '${user.first_name}', '${user.last_name}', '${user.father_name}')" class="edit-btn">Изменить</button>
@@ -39,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(console.error);
     }
+    
 
     document.getElementById('addUserBtn').addEventListener('click', () => {
         openModal('addUserModal');
@@ -54,13 +69,29 @@ document.addEventListener("DOMContentLoaded", () => {
             password: document.getElementById('newPassword').value,
          })
         .then(response => {
-            const trans = response.data;
-            console.log(trans)
+            displayUsers();
         })
         .catch(error => {
-            console.error('Error fetching user info:', error);
+            console.error('Error create user info:', error);
         });
-        displayUsers();
+        closeModal('addUserModal');
+        e.target.reset();
+    });
+
+    document.getElementById('editUserForm').addEventListener('submit', (e) => {
+        axios.patch('/api/admin/user', {
+            email: document.getElementById('editEmail').value,
+            firstName: document.getElementById('editFirstName').value,
+            lastName: document.getElementById('editLastName').value,
+            fatherName: document.getElementById('editFatherName').value,
+            password: document.getElementById('editPassword').value,
+         })
+        .then(response => {
+            displayUsers();
+        })
+        .catch(error => {
+            console.error('Error update user info:', error);
+        });
         closeModal('addUserModal');
         e.target.reset();
     });

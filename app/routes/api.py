@@ -125,20 +125,30 @@ async def users(request):
 
     async with get_async_session() as session:
         user_dao = UserDAO(session)
-        users = await user_dao.get_users()
-
-        return sanic_json({
-            'users': [
+        users_list = await user_dao.get_users()
+        payment_dao = PaymentDAO(session)
+        
+        result = []
+        for user_obj in users_list:
+            accounts = await payment_dao.get_account_by_user_id(user_obj.id)
+            accounts_data = [
                 {
-                    "id": str(user.id),
-                    "email": user.email,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "father_name": user.father_name,
-                } 
-                for user in users
+                    "account_id": account.account_id,
+                    "balance": account.balance,
+                }
+                for account in accounts
             ]
-        })
+            result.append({
+                "id": str(user_obj.id),
+                "email": user_obj.email,
+                "first_name": user_obj.first_name,
+                "last_name": user_obj.last_name,
+                "father_name": user_obj.father_name,
+                "accounts": accounts_data,
+            })
+
+        return sanic_json({'users': result})
+
 
 
 @api_bp.post('/admin/user')
@@ -160,5 +170,45 @@ async def create_user(request):
         password = payload.get('password')
         
         await user_dao.create_user(email, password, first_name, last_name, father_name)
+
+    return sanic_json({"status": "success"})
+
+
+
+@api_bp.patch('/admin/user')
+async def update_user(request):
+    user = request.ctx.user
+
+    if not user.is_super_user:
+        raise SanicException("User dont have an access", status_code=403)
+
+    payload = request.json
+
+    async with get_async_session() as session:
+        user_dao = UserDAO(session)
+        email = payload.get('email')
+        first_name = payload.get('firstName')
+        last_name = payload.get('lastName')
+        father_name = payload.get('fatherName')
+        password = payload.get('password')
+        
+        await user_dao.update_user(email, password, first_name, last_name, father_name)
+
+    return sanic_json({"status": "success"})
+
+
+@api_bp.delete('/admin/user')
+async def delete_user(request):
+    user = request.ctx.user
+
+    if not user.is_super_user:
+        raise SanicException("User dont have an access", status_code=403)
+
+    payload = request.json
+    print(payload)
+    async with get_async_session() as session:
+        user_dao = UserDAO(session)
+        user_id = payload.get('userId')
+        await user_dao.delete_user(user_id)
 
     return sanic_json({"status": "success"})
